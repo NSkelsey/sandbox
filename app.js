@@ -1,34 +1,65 @@
-angular.module('localizationTestMod', 
-  [
-    'tmh.dynamicLocale',
-    'ui.bootstrap',
-])
-.config(['tmhDynamicLocaleProvider', function(tmhDynamicLocaleProvider) {
-  tmhDynamicLocaleProvider.localeLocationPattern('/components/angular-i18n/angular-locale_{{locale}}.js');
+angular.module('sandboxMod', 
+  ['ngRoute'])
+.config(['$routeProvider', function($routeProvider) {
+  $routeProvider.when('/', {
+    controller: 'submissionCtrl',
+    templateUrl: 'work.html',
+    resolve: {
+      initialData: ['SubmissionInitData', function(SubmissionInitData) {
+        return SubmissionInitData();
+      }],
+      otherData: function() { return 234; },
+    },
+  });
+  console.log('config mod');
+
 }])
-.controller('MainCtrl', ['$scope', '$locale', 'tmhDynamicLocale', function($scope, $locale, tmhDynamicLocale) {
-  $scope.current_date = new Date();
+.run(['$rootScope', function($rootScope) {
+  $rootScope.$watch('$routeChangeError', function(e) {
+    console.log('route change error', e);
+  });
+}])
+.factory('SubmissionInitData', ['$q', 'SubmissionFactory', function($q, SubmissionFactory) {
 
-  tmhDynamicLocale.set('fr'); 
+  return function() {
+    console.log('init data');
+  
+    d1 = $q.when(function() { return 'Allo greg'; });
 
-  $scope.spot = $locale;
-  $scope.popup = {
-    open : false,
+    submission = SubmissionFactory;
+
+    return $q.all([d1.promise, submission.doHardWork()]).then(function(results) {
+      return {
+        greeting: results[0],
+        salute: 'Hello sir!',
+        doneWork: results[1],
+      };
+    });
+  };
+}])
+.service('SubmissionFactory', ['$q', '$timeout', function($q, $timeout) {
+
+  var self = this;
+  this.id = 'xxx-xxx-xxx-xxx';
+  console.log('ran sub factory', this);
+  
+  this.doHardWork = function() {
+    var d1 = $q.defer();
+    $timeout(function(){
+      self.meaning = 42;
+      d1.resolve(self);
+    }, 2000);
+    return d1.promise;
   };
 
+}])
+.controller('mainCtrl', [function() {
+  console.log('ran mainCtrl');
+  $scope.name = 'main';
 
-  $scope.availableLocales = {
-    'en': 'English',
-    'de': 'German',
-    'fr': 'French',
-    'ar': 'Arabic',
-    'ja': 'Japanese',
-    'ko': 'Korean',
-    'zh': 'Chinese'
-  };
-
-  $scope.model = {selectedLocale: 'fr'};
-  $scope.$locale = $locale;
-  $scope.changeLocale = tmhDynamicLocale.set;
-
+}])
+.controller('submissionCtrl', ['$scope', function($scope) {
+  console.log('ran subCtrl');
+  $scope.name = 'subCtrl';
+  console.log($scope.$resolve);
 }]);

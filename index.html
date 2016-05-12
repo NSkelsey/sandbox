@@ -1,6 +1,5 @@
 <!doctype html>
-<html data-ng-app="localizationTestMod" data-ng-controller="MainCtrl" data-ng-keydown="keypress($event)" data-ng-strict-di>
-  <link rel="stylesheet" href="/components/bootstrap-inline-rtl/dist/css/bootstrap.min.css" />
+<html data-ng-app="sandboxMod" data-ng-keydown="keypress($event)" data-ng-strict-di>
   <style>
     body {
       margin: 50px;
@@ -8,31 +7,11 @@
 
   </style>
 
-  <div>
-    <p>{{ spot.id }}</p>
-    <p>Pick a locale <select ng-model="model.selectedLocale" ng-options="key as value for (key, value) in availableLocales" ng-change="changeLocale(model.selectedLocale)"></select></p>
-    <p>Selected locale id: {{model.selectedLocale}}</p>
-    <p>Current locale id: {{$locale.id}}</p>
-    <p>A big number: {{1234567890 | number}}</p>
-    <p>The Epoch was on: {{0 | date}}</p>
-    <p>One million of the local currency: {{1000000 | currency}}</p>
-
-    <form>
-      <input id="date-picker"
-      class="form-control inputelem"
-      type="text"
-      readonly="readonly"
-      ng-model="current_date"
-      uib-datepicker-popup
-      is-open="popup.open"
-      />
-      <button type="button" class="btn btn-default" ng-click="popup.open = !popup.open;"><i class="glyphicon glyphicon-calendar"></i></button>
-    </form>
-
+  <h4>Hello there, this is static content</h4>
+  <div ng-view>
   </div>
 
-  <script src="/components/angular/angular.min.js"></script>
-  <script src="/components/angular-ui-bootstrap-bower/ui-bootstrap-tpls.min.js"></script>
-  <script src="/components/angular-dynamic-locale/src/tmhDynamicLocale.js"></script>
+  <script src="/components/angular/angular.js"></script>
+  <script src="/components/angular-route/angular-route.js"></script>
   <script src="/sandbox/app.js"></script>
 </html>
